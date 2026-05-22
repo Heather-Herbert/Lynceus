@@ -38,9 +38,13 @@ Lynceus is a security analysis tool designed to scrutinize browser extensions, V
 - **Test:** `[TODO: Add test command]`
 
 ## Development Conventions
+- **Engineering Standards:**
+    - **Linting:** Pylint score must be at least **9/10** (excluding "fixme" warnings for TODOs).
+    - **Testing:** All tests must pass for any submission.
+    - **Coverage:** Unit tests must cover at least **90%** of all code pathways (aim for 100%).
+    - **Documentation:** READMEs and `GEMINI.md` must be updated concurrently with code changes.
 - **Security First:** Handle all scanned samples as potentially malicious. Use sandboxing or isolated environments for analysis.
 - **API Hygiene:** Never commit VirusTotal API keys to the repository. Use environment variables.
-- **Testing:** [TODO: Specify testing framework]
 
 ## Documentation
 - [TODO: Add links to internal documentation or design docs]
