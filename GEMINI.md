@@ -10,8 +10,10 @@ Lynceus is a security analysis tool designed to scrutinize browser extensions, V
 ### Key Features
 - **Discovery:** Automatically identifies extensions and packages to scan by importing VS Code settings and parsing `package.json` or `package-lock.json` files.
 - **Initial Scanning:** Uses a local Anti-Virus (AV) engine for rapid, offline checks.
+- **Static Analysis:** Integrates Semgrep for deep security audits, identifying dangerous code patterns, secrets, and vulnerabilities in discovered packages.
 - **Escalation:** Suspicious or ambiguous findings are automatically uploaded to VirusTotal for comprehensive multi-engine analysis.
 - **Deep Scrutiny:** Focuses on behavioral analysis beyond simple static signatures.
+- **Notifications:** Supports sending email alerts summarizing scan results or flagging immediate threats.
 
 ### Input Sources
 - **VS Code:** Imports extension lists from local settings files.
@@ -24,11 +26,11 @@ Lynceus is a security analysis tool designed to scrutinize browser extensions, V
 - NPM Packages
 
 ## Architecture & Tech Stack
-*To be defined as implementation begins.*
-
-- **Backend:** [TODO: Choose language/framework (e.g., Python/FastAPI, Node.js)]
-- **AV Integration:** [TODO: Select local AV (e.g., ClamAV)]
-- **APIs:** VirusTotal API
+- **Language:** Python 3.x
+- **AV Integration:** Local AV (e.g., ClamAV) via subprocess.
+- **Static Analysis:** Semgrep (security-audit and secrets rulesets).
+- **APIs:** VirusTotal API (via `requests`)
+- **Notifications:** SMTP via standard Python libraries (SendGrid/AgentMail compatible).
 
 ## Building and Running
 *No build or execution scripts have been identified yet.*
