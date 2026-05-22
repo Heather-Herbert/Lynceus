@@ -1,7 +1,3 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-
 class EmailNotifier:
     def __init__(self, host, port, user, password, sender):
         self.host = host
