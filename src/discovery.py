@@ -25,6 +25,7 @@ def discover_vscode_extensions():
                                 "version": data.get("version"),
                                 "publisher": data.get("publisher"),
                                 "path": str(entry),
+                                "type": "vscode-extension",
                             }
                         )
                 except (json.JSONDecodeError, OSError):
@@ -32,7 +33,60 @@ def discover_vscode_extensions():
     return discovered
 
 
-def discover_npm_packages(path="."):
-    """Parses package.json or package-lock.json for dependencies."""
-    # TODO: Implement parsing logic
-    return []
+def discover_npm_packages(root_path="."):
+    """
+    Parses package-lock.json or package.json to identify dependencies.
+    Scans the entire tree if package-lock.json is present.
+    """
+    root = Path(root_path)
+    lock_file = root / "package-lock.json"
+    pkg_file = root / "package.json"
+
+    discovered = []
+
+    if lock_file.exists():
+        try:
+            with open(lock_file, encoding="utf-8") as f:
+                data = json.load(f)
+                # v2/v3 lock files have 'packages' key with the full tree
+                packages = data.get("packages", {})
+                for pkg_path, pkg_info in packages.items():
+                    if not pkg_path:  # Skip the root package itself
+                        continue
+                    name = pkg_info.get("name")
+                    # In 'packages', the key often contains the name if it's
+                    # a top-level node_modules entry
+                    if not name:
+                        name = pkg_path.split("node_modules/")[-1]
+
+                    discovered.append(
+                        {
+                            "name": name,
+                            "version": pkg_info.get("version"),
+                            "path": str(root / pkg_path),
+                            "type": "npm-package",
+                        }
+                    )
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    elif pkg_file.exists():
+        # Fallback to just top-level if no lock file
+        try:
+            with open(pkg_file, encoding="utf-8") as f:
+                data = json.load(f)
+                deps = data.get("dependencies", {})
+                dev_deps = data.get("devDependencies", {})
+                for name, version in {**deps, **dev_deps}.items():
+                    discovered.append(
+                        {
+                            "name": name,
+                            "version": version,
+                            "path": str(root / "node_modules" / name),
+                            "type": "npm-package",
+                        }
+                    )
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    return discovered
